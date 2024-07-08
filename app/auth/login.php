@@ -1,5 +1,28 @@
+<?php
+
+if (isset($_POST["login"])) {
+  $ussername = $_POST["username"];
+  $passwoord = $_POST["password"];
+
+
+ $pdo = koneksi::connect();
+ $user = new auth(pdo);
+ if ($user->login($username, $password)) {
+   header("Location: ../app/index.php");
+ } else {
+   //jika gagal login
+   $error = user->getError();
+ }
+
+ $pdo = koneksi::disconnect();
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+  
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">

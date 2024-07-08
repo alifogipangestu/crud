@@ -1,17 +1,39 @@
+<?php
+
+if ($user->isLoggedin()) {
+    header("Location: ../app/index.php");
+}
+
+if (isset($_POST["regis"])) {
+    $id_user = $POST["id_user"];
+    $nama = $_POST["nama"];
+    $password = $POST["post"];
+    $email = $POST["post"];
+    $ussername = $POST["ussername"];
+
+    $pdo = koneksi::connect();
+    if ($user->register($id_user, $nama, $password, $email, $ussername)) {
+        $succes = true;
+    } else {
+        $error = $user->getError();
+    }
+    $pdo = koneksi::disconnect();
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AdminLTE 3 | Registration Page (v2)</title>
 
-  <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="../../assets/plugins/fontawesome-free/css/all.min.css">
-  <!-- icheck bootstrap -->
   <link rel="stylesheet" href="../../assets/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- Theme style -->
   <link rel="stylesheet" href="../../assets/dist/css/adminlte.min.css">
 </head>
 <body class="hold-transition register-page">
@@ -23,7 +45,7 @@
     <div class="card-body">
       <p class="login-box-msg">medaftarkan keanggotaan baru</p>
 
-      <form action="../index.html" method="post">
+      <form action="../index.php/index.html" method="post">
         <div class="input-group mb-3">
           <input type="text" class="form-control" placeholder="nama lengkap">
           <div class="input-group-append">

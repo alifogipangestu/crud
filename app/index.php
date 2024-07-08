@@ -1,50 +1,93 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-</html>
-<body>
-    <div>
-        <div>
-            <h3>Belajar PHP 7</h3>
-            <a href="create.php">Tambah data</a>
-        </div>
-        <div>
-            <table border="1">
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    include '../database/koneksi.php';
-                    $pdo = Database::connect();
-                    $sql = 'SELECT * FROM mahasiswa';
-                    foreach ($pdo->query($sql) as $row) {
-                    ?>
+<?php
+include("../database/koneksi.php");
+include "../database/class/auth.php";
 
-                        <tr>
-                            <td><?php echo $row['nama'] ?></td>
-                            <td><?php echo $row['email'] ?></td>
-                            <td>
-                                <a href="edit.php">Edit</a>
-                                <a href="hapus.php">Hapus</a>
-                            </td>
-                        </tr>
+$pdo = Koneksi::connect();
+$user = $new Auth($pdo);
+$currentUser = $user->getUser();
+
+$pdo =  Koneksi::disconnect();
+
+if (!$user->isLoggedIn() && $user->isLoggedIn() == false) {
+    $log = isset($_GET['auth']) ? $_GET['auth'] : 'auth';
+    switch ($log) {
+        case 'login':
+            include 'auth/login.php';
+            break;
+        case 'register':
+            include 'auth/register.php';
+            break;
+        default:
+            include 'auth/login.php';
+            break;
+    }
+} else {
+?>
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+        <title>register,login</title>
+        <?php
+        include 'layout/stylecss.php';
+        ?>
+    </head>
+
+    <body>
+        <div id="app">
+            <?php
+            include("layout/header.php");
+            include("layout/sidebar.php");
+            ?>
+            <div class="main-content">
+                <section class="section">
 
                     <?php
+                    $page = isset($_GET["page"]) ? $_GET["page"] : '';
+                    switch ($page) {
+                        case 'user':
+                            include('page/user/default.php');
+                            break;
+
+                        case 'costumer':
+                            include('page/costumer/default.php');
+                            break;
+
+                        case 'product':
+                            include('page/product/default.php');
+                            break;
+
+                        case 'transaksi':
+                            include('page/transaksi/default.php');
+                            break;
+
+                        case 'struk':
+                            include('page/cetak/default.php');
+                            break;
+
+                        case 'dashboard':
+                            include('page/dashboard/index.php');
+
+                            break;
+                        default:
+                            include('page/dashboard/index.php');
                     }
-                    Database::disconnect();
                     ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</body>
+                </section>
+            </div>
 
+        </div>
+        <!-- General JS Scripts -->
+        <?php
+        include 'layout/footer.php';
+        include("layout/stylejs.php");
+        ?>
+    </body>
+
+    </html>
+
+<?php
+}
+?>
